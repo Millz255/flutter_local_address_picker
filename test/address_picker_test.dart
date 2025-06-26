@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_local_address_picker/flutter_local_address_picker.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:latlong2/latlong.dart';
-import 'mocks.mocks.dart';
-import 'address_picker_test.mocks.dart';
+
+import 'mocks.mocks.dart';  // Generated mock classes
 
 void main() {
   late MockGeocodingService mockGeocodingService;
   late MockMapProvider mockMapProvider;
+
   const testLocation = LatLng(40.7128, -74.0060);
   const testAddress = '123 Main St, New York';
 
@@ -36,11 +36,11 @@ void main() {
       ),
     ));
 
-    
     final onLocationChanged = verify(mockMapProvider.buildMap(
       onLocationChanged: captureAnyNamed('onLocationChanged'),
       initialLocation: anyNamed('initialLocation'),
     )).captured.single as ValueChanged<LatLng>;
+
     onLocationChanged(testLocation);
 
     await tester.pump();
@@ -65,11 +65,11 @@ void main() {
       ),
     ));
 
-    
     final onLocationChanged = verify(mockMapProvider.buildMap(
       onLocationChanged: captureAnyNamed('onLocationChanged'),
       initialLocation: anyNamed('initialLocation'),
     )).captured.single as ValueChanged<LatLng>;
+
     onLocationChanged(testLocation);
 
     await tester.pumpAndSettle();
@@ -85,6 +85,7 @@ void main() {
     )).thenReturn(Container());
 
     AddressResult? result;
+
     await tester.pumpWidget(MaterialApp(
       home: Scaffold(
         body: AddressPicker(
@@ -95,11 +96,11 @@ void main() {
       ),
     ));
 
-    
     final onLocationChanged = verify(mockMapProvider.buildMap(
       onLocationChanged: captureAnyNamed('onLocationChanged'),
       initialLocation: anyNamed('initialLocation'),
     )).captured.single as ValueChanged<LatLng>;
+
     onLocationChanged(testLocation);
 
     await tester.pumpAndSettle();
