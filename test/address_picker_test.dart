@@ -4,10 +4,9 @@ import 'package:flutter_local_address_picker/flutter_local_address_picker.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:latlong2/latlong.dart';
-
+import 'mocks.mocks.dart';
 import 'address_picker_test.mocks.dart';
 
-@GenerateMocks([GeocodingService, MapProvider])
 void main() {
   late MockGeocodingService mockGeocodingService;
   late MockMapProvider mockMapProvider;
