@@ -18,7 +18,6 @@ class LatLng {
   int get hashCode => Object.hash(latitude, longitude);
 }
 
-@immutable
 class AddressResult {
   final String address;
   final LatLng coordinates;

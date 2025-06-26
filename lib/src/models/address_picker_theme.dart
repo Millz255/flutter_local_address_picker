@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-@immutable
+
 class AddressPickerTheme {
   final Color primaryColor;
   final Widget? markerIcon;
