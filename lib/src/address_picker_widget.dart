@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'package:flutter/foundation.dart';
 
-// ================ MODELS ================
+
 class AddressResult {
   final String address;
   final LatLng coordinates;
@@ -39,7 +42,7 @@ class AddressPickerTheme {
   });
 }
 
-// ================ EXCEPTIONS ================
+
 class AddressPickerException implements Exception {
   final String message;
   final dynamic cause;
@@ -70,7 +73,7 @@ class PermissionDeniedException extends AddressPickerException {
       : super('Location permission denied');
 }
 
-// ================ GEOCODING ================
+
 abstract class GeocodingService {
   Future<String> reverseGeocode(LatLng location);
 }
@@ -122,7 +125,7 @@ class NominatimService implements GeocodingService {
   }
 }
 
-// ================ MAP PROVIDERS ================
+
 abstract class MapProvider {
   Widget buildMap({
     required ValueChanged<LatLng> onLocationChanged,
@@ -165,7 +168,7 @@ class OpenStreetMapProvider implements MapProvider {
   }
 }
 
-// ================ MAIN WIDGET ================
+
 class AddressPicker extends StatefulWidget {
   final ValueChanged<AddressResult> onAddressPicked;
   final ValueChanged<AddressPickerException>? onError;
