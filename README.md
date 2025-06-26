@@ -11,9 +11,6 @@ and the Flutter guide for
 [developing packages and plugins](https://flutter.dev/to/develop-packages).
 -->
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
-
 # flutter_local_address_picker
 
 A customizable address picker for Flutter applications with support for multiple map providers and geocoding services.
