@@ -1,41 +1,110 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_local_address_picker/flutter_local_address_picker.dart';
-import 'mock_geocoding_service.dart';
-import 'mock_map_provider.dart';
+import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
 import 'package:latlong2/latlong.dart';
 
-void main() {
-  testWidgets('AddressPicker returns correct address and coordinates',
-      (WidgetTester tester) async {
-    AddressResult? result;
+import 'address_picker_test.mocks.dart';
 
-    await tester.pumpWidget(
-      MaterialApp(
-        home: Scaffold(
-          body: AddressPicker(
-            onAddressPicked: (picked) {
-              result = picked;
-            },
-            mapProvider: MockMapProvider(),
-            geocodingService: MockGeocodingService(),
-          ),
+@GenerateMocks([GeocodingService, MapProvider])
+void main() {
+  late MockGeocodingService mockGeocodingService;
+  late MockMapProvider mockMapProvider;
+  const testLocation = LatLng(40.7128, -74.0060);
+  const testAddress = '123 Main St, New York';
+
+  setUp(() {
+    mockGeocodingService = MockGeocodingService();
+    mockMapProvider = MockMapProvider();
+  });
+
+  testWidgets('AddressPicker shows loading when geocoding', (tester) async {
+    when(mockGeocodingService.reverseGeocode(testLocation))
+        .thenAnswer((_) async => testAddress);
+    when(mockMapProvider.buildMap(
+      onLocationChanged: anyNamed('onLocationChanged'),
+      initialLocation: anyNamed('initialLocation'),
+    )).thenReturn(Container());
+
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: AddressPicker(
+          onAddressPicked: (_) {},
+          geocodingService: mockGeocodingService,
+          mapProvider: mockMapProvider,
         ),
       ),
-    );
+    ));
 
     
-    final mockTapLocation = LatLng(12.34, 56.78);
-    final state =
-        tester.state(find.byType(AddressPicker)) as dynamic;
+    final onLocationChanged = verify(mockMapProvider.buildMap(
+      onLocationChanged: captureAnyNamed('onLocationChanged'),
+      initialLocation: anyNamed('initialLocation'),
+    )).captured.single as ValueChanged<LatLng>;
+    onLocationChanged(testLocation);
 
-    await tester.runAsync(() async {
-      await state._updateAddress(mockTapLocation);
-    });
+    await tester.pump();
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  });
 
-    expect(result, isNotNull);
-    expect(result!.address, 'Mock Street, Mock City, Mock Country');
-    expect(result!.coordinates.latitude, 12.34);
-    expect(result!.coordinates.longitude, 56.78);
+  testWidgets('AddressPicker displays address after geocoding', (tester) async {
+    when(mockGeocodingService.reverseGeocode(testLocation))
+        .thenAnswer((_) async => testAddress);
+    when(mockMapProvider.buildMap(
+      onLocationChanged: anyNamed('onLocationChanged'),
+      initialLocation: anyNamed('initialLocation'),
+    )).thenReturn(Container());
+
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: AddressPicker(
+          onAddressPicked: (_) {},
+          geocodingService: mockGeocodingService,
+          mapProvider: mockMapProvider,
+        ),
+      ),
+    ));
+
+    
+    final onLocationChanged = verify(mockMapProvider.buildMap(
+      onLocationChanged: captureAnyNamed('onLocationChanged'),
+      initialLocation: anyNamed('initialLocation'),
+    )).captured.single as ValueChanged<LatLng>;
+    onLocationChanged(testLocation);
+
+    await tester.pumpAndSettle();
+    expect(find.text(testAddress), findsOneWidget);
+  });
+
+  testWidgets('AddressPicker calls onAddressPicked with correct data', (tester) async {
+    when(mockGeocodingService.reverseGeocode(testLocation))
+        .thenAnswer((_) async => testAddress);
+    when(mockMapProvider.buildMap(
+      onLocationChanged: anyNamed('onLocationChanged'),
+      initialLocation: anyNamed('initialLocation'),
+    )).thenReturn(Container());
+
+    AddressResult? result;
+    await tester.pumpWidget(MaterialApp(
+      home: Scaffold(
+        body: AddressPicker(
+          onAddressPicked: (r) => result = r,
+          geocodingService: mockGeocodingService,
+          mapProvider: mockMapProvider,
+        ),
+      ),
+    ));
+
+    
+    final onLocationChanged = verify(mockMapProvider.buildMap(
+      onLocationChanged: captureAnyNamed('onLocationChanged'),
+      initialLocation: anyNamed('initialLocation'),
+    )).captured.single as ValueChanged<LatLng>;
+    onLocationChanged(testLocation);
+
+    await tester.pumpAndSettle();
+    expect(result?.address, testAddress);
+    expect(result?.coordinates, testLocation);
   });
 }
