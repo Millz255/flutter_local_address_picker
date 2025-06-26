@@ -1,22 +1,32 @@
 name: flutter_local_address_picker
-description: "A new Flutter package project."
-version: 0.0.1
-homepage:
+description: A Flutter package for interactive address selection with map integration, supporting both OpenStreetMap and Google Maps with reverse geocoding.
+version: 1.0.0
+homepage: https://github.com/Millz255/flutter_local_address_picker
+repository: https://github.com/Millz255/flutter_local_address_picker.git
+issue_tracker: https://github.com/Millz255/flutter_local_address_picker/issues
+documentation: https://github.com/Millz255/flutter_local_address_picker#readme
 
 environment:
-  sdk: ^3.8.1
-  flutter: ">=1.17.0"
+  sdk: ">=3.8.1 <4.0.0"
+  flutter: ">=3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_map: ^8.1.1
   latlong2: ^0.9.1
-  geolocator: ^14.0.1
   http: ^1.4.0
-
+  provider: ^6.1.1
+  equatable: ^2.0.5
+  vector_math: ^2.1.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^5.0.0
+  mockito: ^5.4.2
+  build_runner: ^2.4.6
+  lint: ^2.1.1
+
+flutter:
+  uses-material-design: true

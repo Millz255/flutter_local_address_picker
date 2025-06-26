@@ -1,4 +1,16 @@
-include: package:flutter_lints/flutter.yaml
+include: package:lint/analysis_options.yaml
 
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options
+analyzer:
+  errors:
+    missing_required_param: error
+    missing_return: error
+    invalid_override: error
+
+linter:
+  rules:
+    always_declare_return_types: true
+    always_require_non_null_named_parameters: true
+    annotate_overrides: true
+    avoid_empty_else: true
+    avoid_print: false
+    prefer_const_constructors: true
