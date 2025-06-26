@@ -8,6 +8,8 @@ abstract class MapProvider {
     LatLng? initialLocation,
     Widget? markerIcon,
     double? zoom,
+    List<Marker> additionalMarkers = const [],
+    String tileLayerUrlTemplate = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
   });
 }
 
@@ -17,28 +19,35 @@ class OpenStreetMapProvider implements MapProvider {
     required ValueChanged<LatLng> onLocationChanged,
     LatLng? initialLocation,
     Widget? markerIcon,
-    double? zoom = 15.0,
+    double zoom = 15.0,
+    List<Marker> additionalMarkers = const [],
+    String tileLayerUrlTemplate = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
   }) {
+    final defaultLocation = const LatLng(0, 0);
+    final centerLocation = initialLocation ?? defaultLocation;
+
     final marker = Marker(
       width: 40.0,
       height: 40.0,
-      point: initialLocation ?? const LatLng(0, 0),
+      point: centerLocation,
       builder: (ctx) => markerIcon ?? const Icon(Icons.location_pin, size: 40),
     );
 
+    final markers = [marker, ...additionalMarkers];
+
     return FlutterMap(
       options: MapOptions(
-        center: initialLocation ?? const LatLng(0, 0),
-        zoom: zoom!,
+        center: centerLocation,
+        zoom: zoom,
         onTap: (_, latLng) => onLocationChanged(latLng),
       ),
       children: [
         TileLayer(
-          urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+          urlTemplate: tileLayerUrlTemplate,
           subdomains: const ['a', 'b', 'c'],
           userAgentPackageName: 'com.example.flutter_local_address_picker',
         ),
-        MarkerLayer(markers: [marker]),
+        MarkerLayer(markers: markers),
       ],
     );
   }
